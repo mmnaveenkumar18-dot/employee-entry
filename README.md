@@ -33,3 +33,5 @@ Via Thunder Client:
 5. Click on 'Send' to make the request.
 
 Happy coding! 🙂
+## Project Overview
+Employee Entry is a Node.js application for managing employee records using MongoDB.
