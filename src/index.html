@@ -1,0 +1,134 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Employee CRUD</title>
+    <style>
+        body { font-family: Arial; max-width: 800px; margin: 30px auto; padding: 15px; }
+        input, button { padding: 9px; margin: 5px; }
+        button { cursor: pointer; }
+        pre { background: #f2f2f2; padding: 15px; white-space: pre-wrap; }
+        section { border-bottom: 1px solid #ddd; padding: 10px 0; }
+    </style>
+</head>
+<body>
+    <h1>Employee Management</h1>
+
+    <section>
+        <h3>Insert 4 Employees</h3>
+        <button onclick="run('/seed')">Insert Employees</button>
+    </section>
+
+    <section>
+        <h3>Filter Department & Experience</h3>
+        <input id="dept" placeholder="Department (IT)">
+        <input id="exp" type="number" placeholder="Experience greater than">
+        <button onclick="run('/filter?department='+encodeURIComponent(val('dept'))+'&experience='+val('exp'))">Search</button>
+    </section>
+
+    <section>
+        <h3>Find Employee</h3>
+        <input id="findId" placeholder="Employee ID">
+        <button onclick="run('/employee/'+encodeURIComponent(val('findId')))">Find</button>
+    </section>
+
+    <section>
+        <h3>Display Selected Fields</h3>
+        <button onclick="run('/summary')">Show Summary</button>
+    </section>
+
+    <section>
+        <h3>Update Designation & Salary</h3>
+        <input id="updateId" placeholder="Employee ID">
+        <input id="designation" placeholder="New designation">
+        <input id="newSalary" type="number" placeholder="New salary">
+        <button onclick="updateEmployee()">Update</button>
+    </section>
+
+    <section>
+        <h3>Increase Department Salary</h3>
+        <input id="raiseDept" placeholder="Department">
+        <input id="percent" type="number" placeholder="Increase %">
+        <button onclick="raiseSalary()">Increase Salary</button>
+    </section>
+
+    <section>
+        <h3>Salary Range</h3>
+        <input id="min" type="number" placeholder="Minimum salary">
+        <input id="max" type="number" placeholder="Maximum salary">
+        <button onclick="run('/salary?min='+val('min')+'&max='+val('max'))">Search</button>
+    </section>
+
+    <section>
+        <h3>Delete Employee</h3>
+        <input id="deleteId" placeholder="Employee ID">
+        <button onclick="deleteEmployee()">Delete</button>
+    </section>
+
+    <section>
+        <h3>All Employees (Salary: High to Low)</h3>
+        <button onclick="run('/employees')">Show Employees</button>
+    </section>
+
+    <h3>Result</h3>
+    <pre id="result">Results will appear here.</pre>
+
+    <script>
+        const val = id => document.getElementById(id).value;
+
+        async function run(url) {
+            try {
+                const res = await fetch(url);
+                const text = await res.text();
+                try {
+                    document.getElementById("result").textContent =
+                        JSON.stringify(JSON.parse(text), null, 2);
+                } catch {
+                    document.getElementById("result").textContent = text;
+                }
+            } catch (err) {
+                document.getElementById("result").textContent = err.message;
+            }
+        }
+
+        async function updateEmployee() {
+            const res = await fetch('/employee/' + encodeURIComponent(val('updateId')), {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    designation: val('designation'),
+                    salary: Number(val('newSalary'))
+                })
+            });
+            document.getElementById("result").textContent =
+                JSON.stringify(await res.json(), null, 2);
+        }
+
+        async function raiseSalary() {
+            const res = await fetch('/raise', {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    department: val('raiseDept'),
+                    percent: Number(val('percent'))
+                })
+            });
+            document.getElementById("result").textContent =
+                JSON.stringify(await res.json(), null, 2);
+        }
+
+        async function deleteEmployee() {
+            const id = val('deleteId');
+            if (!confirm('Delete employee ' + id + '?')) return;
+            const res = await fetch('/employee/' + encodeURIComponent(id), {
+                method: 'DELETE'
+            });
+            document.getElementById("result").textContent =
+                JSON.stringify(await res.json(), null, 2);
+        }
+    </script>
+</body>
+</html>
+```
