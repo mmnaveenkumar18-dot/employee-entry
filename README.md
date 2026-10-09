@@ -40,3 +40,6 @@ Employee Entry is a Node.js application for managing employee records using Mong
 - Node.js
 - MongoDB
 - Git and GitHub
+
+## Version Control
+This project uses Git and GitHub to track changes and manage project versions.
