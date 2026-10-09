@@ -35,3 +35,8 @@ Via Thunder Client:
 Happy coding! 🙂
 ## Project Overview
 Employee Entry is a Node.js application for managing employee records using MongoDB.
+
+## Technologies Used
+- Node.js
+- MongoDB
+- Git and GitHub
